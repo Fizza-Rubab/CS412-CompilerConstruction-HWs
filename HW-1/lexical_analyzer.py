@@ -42,6 +42,7 @@ def is_comment(token_text):
 while True:
     if index >= length-2:
         break
+    print(index)
     curr_char = text_stream[index]
     if curr_char==" " or curr_char=="\t":
         index+=1
