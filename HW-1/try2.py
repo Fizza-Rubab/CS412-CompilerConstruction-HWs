@@ -1,4 +1,5 @@
 import re
+from string import whitespace
 keywords = ["and", "break", "continue", "else", "false", "for", "if", "mod", "not", "or", "then", "true", "void", "while"]
 punctuators = ["{", "}", "(", ")", ";", "[", "]", ",", "."]
 id_punctuators = punctuators.copy()
@@ -7,7 +8,7 @@ data_types = ["bool", "char", "int", "float"]
 rel_operators = [">", "<", ">=", "<=", "==", "!="]
 special_chars = list('[@!#$%^&*<>?/\|~:')
 arith_operators = ["+", "-", "*", "/", "^"]
-whitespaces = [" ", "\n", "\t"]
+whitespaces = [" ", "\t"]
 comment_starter = "/$"
 comment_ender = "$/"
 test_file = open('test01.tpl','r')
@@ -36,22 +37,22 @@ def is_punctuator(token_text):
     return token_text in punctuators
 def is_datatype(token_text):
     return token_text in data_types
-def is_space(token_text):
-    return token_text in whitespaces
 def is_char_constant(token_text):
     return re.match("'[^']'", token_text)
 def is_string_literal(token_text):
     return re.match('"[^"]*"', token_text)
 
 while not end:
+    # print(line_no)
     while (not end):
         if index>=length:
             end = True
             continue
         peek = text_stream[index]
-        if (peek == ' ' or peek == '\t'):
+        if (peek in whitespaces):
             index+=1
         elif (peek=='\n'):
+            # print(line_no)
             index+=1
             line_no+=1
         else:
@@ -69,6 +70,7 @@ while not end:
     elif peek in punctuators:
         token_stream+="<%s>"%peek
     elif peek=='/':
+        # print("ind %d"%index)
         if index+1<length and text_stream[index+1]=='$':
             temp_index = index+2
             while not end:
@@ -78,12 +80,13 @@ while not end:
                     end = True
                     continue
                 if text_stream[temp_index]=='\n':
+                    # print(line_no)
                     errors+=str(line_no)+" incomplete comment\n"
                     line_no+=1
                     index=temp_index+1
                     break
                 elif text_stream[temp_index]=='$' and text_stream[temp_index+1]=='/':
-                    index=temp_index+2
+                    index=temp_index+1
                     break
                 else:
                     temp_index+=1
@@ -127,16 +130,21 @@ while not end:
                         token_stream+="<character,%s>"%word
                     else:
                         token_stream+="<literal,%s>"%word
+                    temp_index+=1
                     break
                 elif text_stream[temp_index]=='\n':
                     errors+='%s " unrecognized symbol\n'%line_no
+                    line_no+=1
                     break
                 else:
                     buffer.append(text_stream[temp_index])
                     temp_index+=1
-        index = temp_index-1
+            index = temp_index-1
+        else:
+            errors+='%s " unrecognized symbol\n'%line_no
     elif peek=="'":
         buffer = []
+        # print(line_no)
         if index+1<length:
             temp_index = index+1
             while not end:
@@ -149,6 +157,7 @@ while not end:
                         token_stream+="<character,%s>"%word
                     else:
                         token_stream+="<literal,%s>"%word
+                    temp_index+=1
                     break
                 elif text_stream[temp_index]=='\n':
                     errors+="%s ' unrecognized symbol\n"%line_no
@@ -156,7 +165,9 @@ while not end:
                 else:
                     buffer.append(text_stream[temp_index])
                     temp_index+=1
-        index = temp_index-1
+            index = temp_index-1
+        else:
+            errors+="%s ' unrecognized symbol\n"%line_no
     elif peek in special_chars:
         errors+="%s %s unrecognized symbol\n"%(line_no, peek)
     elif peek in punctuators:
@@ -175,12 +186,14 @@ while not end:
                 continue
             if text_stream[temp_index] in new_punctuators or text_stream[temp_index] in new_arith_ops or text_stream[temp_index] in rel_operators or text_stream[temp_index] in whitespaces:
                 break
-            if decimal
+            elif text_stream[temp_index]=='\n':
+                line_no+=1
+                break
             buffer.append(text_stream[temp_index])
             temp_index+=1
         index=temp_index-1
         num = ''.join(buffer)
-        print(num)
+        # print(num)
         if is_number(num):
             token_stream+=("<num,%s>"%num)
             symbol_table[id_num]=num
@@ -194,11 +207,14 @@ while not end:
                 continue
             if text_stream[temp_index] in id_punctuators or text_stream[temp_index] in arith_operators or text_stream[temp_index] in rel_operators or text_stream[temp_index] in whitespaces or text_stream[temp_index]=="=" or text_stream[temp_index] in special_chars:
                 break
+            elif text_stream[temp_index]=='\n':
+                line_no+=1
+                break
             buffer.append(text_stream[temp_index])
             temp_index+=1
         index=temp_index-1
         word = ''.join(buffer)
-        print(word)
+        # print(word)
         if is_keyword(word):
             token_stream+=("<%s>"%word)
         elif is_datatype(word):
@@ -212,10 +228,7 @@ while not end:
     index+=1
     if index>=length:
         end = True
-        
-
-
-    
+            
 out_file = open("test.out", 'w')
 out_file.write(token_stream)
 out_file.close()
