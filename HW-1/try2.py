@@ -1,4 +1,3 @@
-
 import re
 keywords = ["and", "break", "continue", "else", "false", "for", "if", "mod", "not", "or", "then", "true", "void", "while"]
 punctuators = ["{", "}", "(", ")", ";", "[", "]", ",", "."]
@@ -11,7 +10,7 @@ arith_operators = ["+", "-", "*", "/", "^"]
 whitespaces = [" ", "\n", "\t"]
 comment_starter = "/$"
 comment_ender = "$/"
-test_file = open('test02.tpl','r')
+test_file = open('test01.tpl','r')
 text_stream = test_file.read()
 length = len(text_stream) 
 symbol_table = {}
@@ -43,9 +42,6 @@ def is_char_constant(token_text):
     return re.match("'[^']'", token_text)
 def is_string_literal(token_text):
     return re.match('"[^"]*"', token_text)
-def is_comment(token_text):
-    return re.match("/\$.*?\$/", token_text)
-
 
 while not end:
     while (not end):
@@ -60,7 +56,6 @@ while not end:
             line_no+=1
         else:
             break
-    # print(index, text_stream[index])
     if end:
         break
     if peek=='+':
@@ -173,12 +168,14 @@ while not end:
         new_punctuators.remove('.')
         new_arith_ops = arith_operators.copy()
         new_arith_ops.remove('-')
+        decimal  = 0
         while not end:
             if temp_index>=length:
                 end=True
                 continue
             if text_stream[temp_index] in new_punctuators or text_stream[temp_index] in new_arith_ops or text_stream[temp_index] in rel_operators or text_stream[temp_index] in whitespaces:
                 break
+            if decimal
             buffer.append(text_stream[temp_index])
             temp_index+=1
         index=temp_index-1
@@ -212,7 +209,6 @@ while not end:
             id_num+=1         
         else:
             errors+=(str(line_no)+"%s unrecognized token\n")%word
-        # index+=1
     index+=1
     if index>=length:
         end = True
