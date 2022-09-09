@@ -41,6 +41,13 @@ def is_char_constant(token_text):
     return re.match("'[^']'", token_text)
 def is_string_literal(token_text):
     return re.match('"[^"]*"', token_text)
+def check_symbol_table(st, word):
+    ans = False
+    for i in st:
+        if st[i]==word:
+            ans = i
+            break
+    return ans
 
 while not end:
     # print(line_no)
@@ -189,15 +196,20 @@ while not end:
             elif text_stream[temp_index]=='\n':
                 line_no+=1
                 break
+            if text_stream[temp_index]=='.':
+                decimal+=1
+            if decimal>=2:
+                break
             buffer.append(text_stream[temp_index])
             temp_index+=1
         index=temp_index-1
         num = ''.join(buffer)
-        # print(num)
         if is_number(num):
             token_stream+=("<num,%s>"%num)
-            symbol_table[id_num]=num
-            id_num+=1
+            check = check_symbol_table(symbol_table, num)
+            if check==False:
+                symbol_table[id_num]=num
+                id_num+=1
     elif peek=="_" or peek.isalpha():
         buffer = []
         temp_index = index
@@ -214,15 +226,18 @@ while not end:
             temp_index+=1
         index=temp_index-1
         word = ''.join(buffer)
-        # print(word)
         if is_keyword(word):
             token_stream+=("<%s>"%word)
         elif is_datatype(word):
             token_stream+=("<dt,%s>"%word)
         elif is_identifier(word):
-            symbol_table[id_num]=word
-            token_stream+=("<id,%s>"%id_num)
-            id_num+=1         
+            check = check_symbol_table(symbol_table, word)
+            if check==False:
+                symbol_table[id_num]=word
+                token_stream+=("<id,%s>"%id_num)
+                id_num+=1
+            else:
+                token_stream+=("<id,%d>"%check)
         else:
             errors+=(str(line_no)+"%s unrecognized token\n")%word
     index+=1
