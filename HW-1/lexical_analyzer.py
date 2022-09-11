@@ -38,6 +38,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def reset(self):
+        '''
+        The method resets state of lexical analyzer to intitial state that includes setting symbol table, token stream, buffer and other dependents to null
+        '''
         self.symbol_table = {}
         self.buffer = []
         self.index = 0
@@ -54,8 +57,14 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def is_identifier(self,token_text):
+        '''
+        The method checks if token text is an identifier or not according to TUPLE specifications
+        '''
         return re.match("[_a-zA-Z][_a-zA-Z0-9]{0,30}", token_text)
     def is_number(self,token_text):
+        '''
+        The method checks if token text is number or not according to TUPLE specifications
+        '''
         token_text = token_text.strip()
         # Need to find the match of same size as the token because of the capturing group.
         for i in re.findall("-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?", token_text):
@@ -63,22 +72,46 @@ class Lexer:
                 return True
         return False
     def is_arithop(self,token_text):
+        '''
+        The method checks if token text is an arithmetic operator or not according to TUPLE specifications
+        '''
         return token_text in self.arith_operators
-    def is_relop(self,token_text):
+    def is_relop(self,token_text):        
+        '''
+        The method checks if token text is an relational operator or not according to TUPLE specifications
+        '''
         return token_text in self.rel_operators
     def is_keyword(self,token_text):
+        '''
+        The method checks if token text is a keyword or not according to TUPLE specifications
+        '''
         return token_text in self.keywords
     def is_punctuator(self,token_text):
+        '''
+        The method checks if token text is puncutuator or not according to TUPLE specifications
+        '''
         return token_text in self.punctuators
     def is_datatype(self,token_text):
+        '''
+        The method checks if token text is data type or not according to TUPLE specifications
+        '''
         return token_text in self.data_types
     def is_char_constant(self,token_text):
+        '''
+        The method checks if token text is character constant or not according to TUPLE specifications
+        '''
         return re.match("'[^']'", token_text)
     def is_string_literal(self,token_text):
+        '''
+        The method checks if token text is string literal or not according to TUPLE specifications
+        '''
         return re.match('"[^"]*"', token_text)
     #-------------------------------------
     #-------------------------------------
-    def check_symbol_table(self, word):   
+    def check_symbol_table(self, word): 
+        '''
+        The method checks if the word is already in symbol table or not. If it is not then only new id is assigned to it otherwise earlier is use
+        '''  
         ans = False
         for i in self.symbol_table:
             if self.symbol_table[i]==word:
@@ -88,6 +121,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def whitespaceAnalyze(self):
+        '''
+        The method checks if current word is whitespace and if it is then it gets ignored.
+        '''
         while (not self.end):
             if self.index>=self.length:
                 self.end = True
@@ -103,6 +139,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def commentAnalyze(self):
+        '''
+        The method checks if a comment is found or not and if it is then it gets ignored.
+        '''
         if self.index+1<self.length and self.text_stream[self.index+1]=='$':
             temp_index = self.index+2
             while not self.end:
@@ -200,6 +239,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def digitAnalyze(self):
+        '''
+        The method checks for the digits
+        '''
         self.buffer = []
         temp_index = self.index
         new_punctuators = self.punctuators.copy()
@@ -231,6 +273,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def alphaAnalyze(self):
+        '''
+        The method checks for alphabets
+        '''
         self.buffer = []
         temp_index = self.index
         while not self.end:
@@ -263,6 +308,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def notAnalyze(self):
+        '''
+        The method checks for the not operator
+        '''
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,!=>"
             self.index+=1
@@ -271,6 +319,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def greatAnalyze(self):
+        '''
+        The method checks for greator than operator
+        '''
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,>=>"
             self.index+=1
@@ -279,6 +330,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def lessAnalyze(self):
+        '''
+        The method checks for less than operator
+        '''
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,<=>"
             self.index+=1
@@ -287,6 +341,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def eqAnalyze(self):
+        '''
+        The method checks for relation equals or assignment operators
+        '''
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,==>"
             self.index+=1
@@ -295,6 +352,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def analyze(self):
+        '''
+        This method serves as a top module with all the analyze methods composed.
+        '''
         while(not self.end):
             self.whitespaceAnalyze()
             if self.end:
@@ -337,6 +397,9 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def output(self):
+        '''
+        The method outputs error, sym and out files
+        '''
         out_file = open("%s.out" %self.test_file_name,'w')
         out_file.write(self.token_stream)
         out_file.close()
@@ -352,6 +415,9 @@ class Lexer:
     #-------------------------------------        
 
     def run(self,filename):
+        '''
+        The method serves as a lexer activator for the given filename. 
+        '''
         self.reset()
         self.test_file = open(filename,'r')
         self.test_file_name = os.path.splitext(filename)[0]
