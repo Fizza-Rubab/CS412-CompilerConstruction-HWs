@@ -9,6 +9,6 @@ int main(void    )
 		hello = "Hello World!!";
 		print(hello);
 		int two;
-		two = 23.5.9;
+		two = 23.5E-10.9;
 	return 0;
 }
