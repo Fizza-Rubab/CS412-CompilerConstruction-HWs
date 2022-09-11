@@ -27,9 +27,9 @@ class Lexer:
 
         self.test_file = open(filename,'r')
         self.text_stream = self.test_file.read()
-        self.length = len(self.text_stream) 
-        
-    
+        self.length = len(self.text_stream)   
+    #-------------------------------------
+    #-------------------------------------
     def is_identifier(self,token_text):
         return re.match("[_a-zA-Z][_a-zA-Z0-9]{0,30}", token_text)
     def is_number(self,token_text):
@@ -48,7 +48,8 @@ class Lexer:
         return re.match("'[^']'", token_text)
     def is_string_literal(self,token_text):
         return re.match('"[^"]*"', token_text)
-
+    #-------------------------------------
+    #-------------------------------------
     def whitespaceAnalyze(self):
         while (not self.end):
             if self.index>=self.length:
@@ -63,7 +64,8 @@ class Lexer:
                 self.line_no+=1
             else:
                 break
-
+    #-------------------------------------
+    #-------------------------------------
     def commentAnalyze(self):
         if self.index+1<self.length and self.text_stream[self.index+1]=='$':
             temp_index = self.index+2
@@ -86,7 +88,8 @@ class Lexer:
                     temp_index+=1
         else:
             self.token_stream+="</>"
-
+    #-------------------------------------
+    #-------------------------------------
     def doublequoteAnalyze(self):
         self.buffer = []
         if self.index+1<self.length:
@@ -113,8 +116,8 @@ class Lexer:
             self.index = temp_index-1
         else:
             self.errors+='%s " unrecognized symbol\n'%self.line_no
-
-
+    #-------------------------------------
+    #-------------------------------------
     def singlequoteAnalyze(self): 
         self.buffer = []
         if self.index+1<self.length:
@@ -140,7 +143,8 @@ class Lexer:
             self.index = temp_index-1
         else:
             self.errors+="%s ' unrecognized symbol\n"%self.line_no
-
+    #-------------------------------------
+    #-------------------------------------
     def digitAnalyze(self):
         self.buffer = []
         temp_index = self.index
@@ -167,8 +171,8 @@ class Lexer:
             self.token_stream+=("<num,%s>"%num)
             self.symbol_table[self.id_num]=num
             self.id_num+=1
-
-
+    #-------------------------------------
+    #-------------------------------------
     def alphaAnalyze(self):
         self.buffer = []
         temp_index = self.index
@@ -195,35 +199,40 @@ class Lexer:
             self.id_num+=1         
         else:
             self.errors+=(str(self.line_no)+"%s unrecognized token\n")%word
-
+    #-------------------------------------
+    #-------------------------------------
     def notAnalyze(self):
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,!=>"
             self.index+=1
         else:
             self.errors+="%s ! unrecognized symbol\n"%(self.line_no)
-
+    #-------------------------------------
+    #-------------------------------------
     def greatAnalyze(self):
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,>=>"
             self.index+=1
         else:
             self.token_stream+="<rel_op,>>"
-
+    #-------------------------------------
+    #-------------------------------------
     def lessAnalyze(self):
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,<=>"
             self.index+=1
         else:
             self.token_stream+="<rel_op,<>"
-
+    #-------------------------------------
+    #-------------------------------------
     def eqAnalyze(self):
         if self.index+1<self.length and self.text_stream[self.index+1]=='=':
             self.token_stream+="<rel_op,==>"
             self.index+=1
         else:
             self.token_stream+="<=>"
-
+    #-------------------------------------
+    #-------------------------------------
     def analyze(self):
         while(not self.end):
             self.whitespaceAnalyze()
@@ -264,7 +273,8 @@ class Lexer:
             self.index+=1
             if self.index>=self.length:
                 self.end = True
-
+    #-------------------------------------
+    #-------------------------------------
     def output(self):
         out_file = open("test.out", 'w')
         out_file.write(self.token_stream)
