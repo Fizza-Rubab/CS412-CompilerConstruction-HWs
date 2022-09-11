@@ -18,5 +18,5 @@ from lexical_analyzer import Lexer #importing Lexer class
 
 lex=Lexer() 
 lex.lexer_activate("test01.tpl")
-#lex.lexer_activate("test02.tpl")
+lex.lexer_activate("test02.tpl")
 lex.lexer_activate("test03.tpl")

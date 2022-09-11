@@ -78,7 +78,7 @@ class Lexer:
     def whitespaceAnalyze(self):
         while (not self.end):
             if self.index>=self.length:
-                end = True
+                self.end = True
                 continue
             self.peek = self.text_stream[self.index]
             if (self.peek in self.whitespaces):
