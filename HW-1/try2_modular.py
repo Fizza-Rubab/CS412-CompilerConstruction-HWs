@@ -1,6 +1,7 @@
 import re
 from string import whitespace
 
+#----------------------CLASS DEFINITION---------------
 class Lexer:
     def __init__(self,filename):
         self.keywords = ["and", "break", "continue", "else", "false", "for", "if", "mod", "not", "or", "then", "true", "void", "while"]
@@ -276,8 +277,7 @@ class Lexer:
             symbol_file.write(str(i) + " " + self.symbol_table[i] +'\n')
         symbol_file.close()
 
-
-
+#-------------------------------------
 #--------------------------------MAIN---------------------------------------
 lex=Lexer("test01.tpl")
 lex.analyze()
