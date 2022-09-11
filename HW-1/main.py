@@ -21,6 +21,6 @@ string literal and character constants can both begin from either double quotes 
 from lexical_analyzer import Lexer #importing Lexer class
 
 lex = Lexer() 
-# lex.run("test01.tpl")
-# lex.run("test02.tpl")
-lex.run("eh.tpl")
+lex.run("test01.tpl")
+lex.run("test02.tpl")
+lex.run("test03.tpl")
