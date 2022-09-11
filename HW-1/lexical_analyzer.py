@@ -1,5 +1,5 @@
 import re
-from string import whitespace
+import os
 
 #----------------------CLASS DEFINITION---------------
 class Lexer:
@@ -21,14 +21,13 @@ class Lexer:
         self.line_no = 1
         self.token_stream=""
         self.id_num=1
-        self.errors = ""
+        self.errors = "<line number> <error found>\n"
         self.end = False
         self.peek=""
-
         self.test_file = ""
+        self.test_file_name = ""
         self.text_stream = ""
         self.length = 0  
-        self.nOffiles=1
     #-------------------------------------
     #-------------------------------------
     def reset(self):
@@ -38,18 +37,24 @@ class Lexer:
         self.line_no = 1
         self.token_stream=""
         self.id_num=1
-        self.errors = ""
+        self.errors = "<line number> <error found>\n"
         self.end = False
         self.peek=""
         self.test_file = ""
         self.text_stream = ""
+        self.test_file_name = ""
         self.length = 0  
     #-------------------------------------
     #-------------------------------------
     def is_identifier(self,token_text):
         return re.match("[_a-zA-Z][_a-zA-Z0-9]{0,30}", token_text)
     def is_number(self,token_text):
-        return re.match("[-+]?\d+(\.\d+)?(E[-+]?\d+)?", token_text)
+        token_text = token_text.strip()
+        # Need to find the match of same size as the token because of the capturing group.
+        for i in re.findall("-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?", token_text):
+            if len(i)==len(token_text):
+                return True
+        return False
     def is_arithop(self,token_text):
         return token_text in self.arith_operators
     def is_relop(self,token_text):
@@ -66,10 +71,10 @@ class Lexer:
         return re.match('"[^"]*"', token_text)
     #-------------------------------------
     #-------------------------------------
-    def check_symbol_table(st, word):
+    def check_symbol_table(self, word):   
         ans = False
-        for i in st:
-            if st[i]==word:
+        for i in self.symbol_table:
+            if self.symbol_table[i]==word:
                 ans = i
                 break
         return ans
@@ -84,7 +89,6 @@ class Lexer:
             if (self.peek in self.whitespaces):
                 self.index+=1
             elif (self.peek=='\n'):
-                # print(line_no)
                 self.index+=1
                 self.line_no+=1
             else:
@@ -101,7 +105,6 @@ class Lexer:
                     self.end = True
                     continue
                 if self.text_stream[temp_index]=='\n':
-                    # print(line_no)
                     self.errors+=str(self.line_no)+" incomplete comment\n"
                     self.line_no+=1
                     self.index=temp_index+1
@@ -121,10 +124,16 @@ class Lexer:
             temp_index = self.index+1
             while not self.end:
                 if temp_index>=self.length:
-                    self.errors+='%s " unrecognized symbol\n'%self.line_no
+                    halfword = "".join(self.buffer)
+                    if len(halfword)<=1:
+                        self.errors+='%s "%s (Invalid char constant)\n'%(self.line_no, halfword)
+                    else:
+                        self.errors+='%s "%s (Invalid string literal)\n'%(self.line_no, halfword)
                     self.end = True
                 elif self.text_stream[temp_index]=='"':
                     word = "".join(self.buffer)
+                    if len(word)==0:
+                        self.token_stream+="<character,>"%word
                     if len(word)==1:
                         self.token_stream+="<character,%s>"%word
                     else:
@@ -132,15 +141,18 @@ class Lexer:
                     temp_index+=1
                     break
                 elif self.text_stream[temp_index]=='\n':
-                    self.errors+='%s " unrecognized symbol\n'%self.line_no
-                    self.line_no+=1
+                    halfword = "".join(self.buffer)
+                    if len(halfword)<=1:
+                        self.errors+='%s "%s (Invalid char constant)\n'%(self.line_no, halfword)
+                    else:
+                        self.errors+='%s "%s (Invalid string literal)\n'%(self.line_no, halfword)
                     break
                 else:
                     self.buffer.append(self.text_stream[temp_index])
                     temp_index+=1
             self.index = temp_index-1
         else:
-            self.errors+='%s " unrecognized symbol\n'%self.line_no
+            self.errors+='%s " (Invalid string literal)\n'%self.line_no
     #-------------------------------------
     #-------------------------------------
     def singlequoteAnalyze(self): 
@@ -149,10 +161,16 @@ class Lexer:
             temp_index = self.index+1
             while not self.end:
                 if temp_index>=self.length:
-                    self.errors+="%s ' unrecognized symbol\n"%self.line_no
+                    halfword = "".join(self.buffer)
+                    if len(halfword)<=1:
+                        self.errors+="%s '%s (Invalid char constant)\n"%(self.line_no, halfword)
+                    else:
+                        self.errors+="%s '%s (Invalid string literal)\n"%(self.line_no, halfword)
                     self.end = True
                 elif self.text_stream[temp_index]=="'":
                     word = "".join(self.buffer)
+                    if len(word)==0:
+                        self.token_stream+="<character,>"%word
                     if len(word)==1:
                         self.token_stream+="<character,%s>"%word
                     else:
@@ -160,14 +178,18 @@ class Lexer:
                     temp_index+=1
                     break
                 elif self.text_stream[temp_index]=='\n':
-                    self.errors+="%s ' unrecognized symbol\n"%self.line_no
+                    halfword = "".join(self.buffer)
+                    if len(halfword)<=1:
+                        self.errors+="%s '%s (Invalid char constant)\n"%(self.line_no, halfword)
+                    else:
+                        self.errors+="%s '%s (Invalid string literal)\n"%(self.line_no, halfword)
                     break
                 else:
                     self.buffer.append(self.text_stream[temp_index])
                     temp_index+=1
             self.index = temp_index-1
         else:
-            self.errors+="%s ' unrecognized symbol\n"%self.line_no
+            self.errors+="%s ' (Invalid char constant)\n"%self.line_no
     #-------------------------------------
     #-------------------------------------
     def digitAnalyze(self):
@@ -177,7 +199,7 @@ class Lexer:
         new_punctuators.remove('.')
         new_arith_ops = self.arith_operators.copy()
         new_arith_ops.remove('-')
-        decimal  = 0
+        decimal = 0
         while not self.end:
             if temp_index>=self.length:
                 self.end=True
@@ -187,15 +209,18 @@ class Lexer:
             elif self.text_stream[temp_index]=='\n':
                 self.line_no+=1
                 break
+            if self.text_stream[temp_index]=='.':
+                decimal+=1
+            if decimal>=2:
+                break
             self.buffer.append(self.text_stream[temp_index])
             temp_index+=1
         self.index=temp_index-1
         num = ''.join(self.buffer)
-        # print(num)
         if self.is_number(num):
             self.token_stream+=("<num,%s>"%num)
-            self.symbol_table[self.id_num]=num
-            self.id_num+=1
+        else:
+            self.errors+="%s (%s invalid number)\n"%(self.line_no, num)
     #-------------------------------------
     #-------------------------------------
     def alphaAnalyze(self):
@@ -219,9 +244,13 @@ class Lexer:
         elif self.is_datatype(word):
             self.token_stream+=("<dt,%s>"%word)
         elif self.is_identifier(word):
-            self.symbol_table[self.id_num]=word
-            self.token_stream+=("<id,%s>"%self.id_num)
-            self.id_num+=1         
+            check = self.check_symbol_table(word)
+            if check==False:
+                self.symbol_table[self.id_num]=word
+                self.token_stream+=("<id,%s>"%self.id_num)
+                self.id_num+=1
+            else:
+                self.token_stream+=("<id,%d>"%check)
         else:
             self.errors+=(str(self.line_no)+"%s unrecognized token\n")%word
     #-------------------------------------
@@ -301,28 +330,28 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def output(self):
-        out_file = open("test%s.out" %self.nOffiles,'w')
+        out_file = open("%s.out" %self.test_file_name,'w')
         out_file.write(self.token_stream)
         out_file.close()
-        symbol_file = open("test%s.sym" %self.nOffiles, 'a')
-        err_file = open("test%s.err" %self.nOffiles, 'w')
-        err_file.write(self.errors)
-        err_file.close()
+        symbol_file = open("%s.sym" %self.test_file_name, 'a')
         for i in self.symbol_table:
             symbol_file.write(str(i) + " " + self.symbol_table[i] +'\n')
         symbol_file.close()
-        
+        err_file = open("%s.err" %self.test_file_name, 'w')
+        err_file.write(self.errors)
+        err_file.close()
+
     #-------------------------------------
     #-------------------------------------        
 
-    def lexer_activate(self,filename):
+    def run(self,filename):
         self.reset()
         self.test_file = open(filename,'r')
+        self.test_file_name = os.path.splitext(filename)[0]
         self.text_stream = self.test_file.read()
         self.length = len(self.text_stream)  
         self.analyze()
         self.output()
-        self.nOffiles+=1
 #-------------------------------------
 #-------------------------------------
 
