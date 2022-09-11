@@ -66,6 +66,15 @@ class Lexer:
         return re.match('"[^"]*"', token_text)
     #-------------------------------------
     #-------------------------------------
+    def check_symbol_table(st, word):
+        ans = False
+        for i in st:
+            if st[i]==word:
+                ans = i
+                break
+        return ans
+    #-------------------------------------
+    #-------------------------------------
     def whitespaceAnalyze(self):
         while (not self.end):
             if self.index>=self.length:
@@ -303,8 +312,8 @@ class Lexer:
             symbol_file.write(str(i) + " " + self.symbol_table[i] +'\n')
         symbol_file.close()
         
-#-------------------------------------
-#-------------------------------------        
+    #-------------------------------------
+    #-------------------------------------        
 
     def lexer_activate(self,filename):
         self.reset()
