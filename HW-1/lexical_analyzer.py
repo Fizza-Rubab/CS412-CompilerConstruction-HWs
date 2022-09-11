@@ -3,7 +3,7 @@ from string import whitespace
 
 #----------------------CLASS DEFINITION---------------
 class Lexer:
-    def __init__(self,filename):
+    def __init__(self):
         self.keywords = ["and", "break", "continue", "else", "false", "for", "if", "mod", "not", "or", "then", "true", "void", "while"]
         self.punctuators = ["{", "}", "(", ")", ";", "[", "]", ",", "."]
         self.id_punctuators = self.punctuators.copy()
@@ -25,9 +25,25 @@ class Lexer:
         self.end = False
         self.peek=""
 
-        self.test_file = open(filename,'r')
-        self.text_stream = self.test_file.read()
-        self.length = len(self.text_stream)   
+        self.test_file = ""
+        self.text_stream = ""
+        self.length = 0  
+        self.nOffiles=1
+    #-------------------------------------
+    #-------------------------------------
+    def reset(self):
+        self.symbol_table = {}
+        self.buffer = []
+        self.index = 0
+        self.line_no = 1
+        self.token_stream=""
+        self.id_num=1
+        self.errors = ""
+        self.end = False
+        self.peek=""
+        self.test_file = ""
+        self.text_stream = ""
+        self.length = 0  
     #-------------------------------------
     #-------------------------------------
     def is_identifier(self,token_text):
@@ -276,17 +292,27 @@ class Lexer:
     #-------------------------------------
     #-------------------------------------
     def output(self):
-        out_file = open("test.out", 'w')
+        out_file = open("test%s.out" %self.nOffiles,'w')
         out_file.write(self.token_stream)
         out_file.close()
-        symbol_file = open("test.sym", 'a')
-        err_file = open("test.err", 'w')
+        symbol_file = open("test%s.sym" %self.nOffiles, 'a')
+        err_file = open("test%s.err" %self.nOffiles, 'w')
         err_file.write(self.errors)
         err_file.close()
         for i in self.symbol_table:
             symbol_file.write(str(i) + " " + self.symbol_table[i] +'\n')
         symbol_file.close()
+        
+        
 
+    def lexer_activate(self,filename):
+        self.reset()
+        self.test_file = open(filename,'r')
+        self.text_stream = self.test_file.read()
+        self.length = len(self.text_stream)  
+        self.analyze()
+        self.output()
+        self.nOffiles+=1
 #-------------------------------------
 #-------------------------------------
 
