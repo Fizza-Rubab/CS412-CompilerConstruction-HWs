@@ -2,8 +2,15 @@ import re
 from string import whitespace
 
 #----------------------CLASS DEFINITION---------------
+'''
+Lexer Class have all the attributes and methods that lexer will need while scanning and tokenization
+'''
 class Lexer:
     def __init__(self):
+        '''
+        The method initializes Lexer and set predefined attributes according to TUPLE language specifications. It includes reserved words, operators, white spaces, punctautors, data type, special characters, alphabets, numbers and comment terminators. 
+        In addition to this, symbol table, line number, lexer index, token stream, lexeam, errors, peek and stream terminator is also set to null to begin with.  
+        '''
         self.keywords = ["and", "break", "continue", "else", "false", "for", "if", "mod", "not", "or", "then", "true", "void", "while"]
         self.punctuators = ["{", "}", "(", ")", ";", "[", "]", ",", "."]
         self.id_punctuators = self.punctuators.copy()
