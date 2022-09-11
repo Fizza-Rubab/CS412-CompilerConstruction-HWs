@@ -303,7 +303,8 @@ class Lexer:
             symbol_file.write(str(i) + " " + self.symbol_table[i] +'\n')
         symbol_file.close()
         
-        
+#-------------------------------------
+#-------------------------------------        
 
     def lexer_activate(self,filename):
         self.reset()
