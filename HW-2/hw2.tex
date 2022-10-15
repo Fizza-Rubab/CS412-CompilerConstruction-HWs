@@ -1,0 +1,269 @@
+\UseRawInputEncoding
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{float}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{accents}
+\usepackage{listings}
+\usepackage{hyperref}
+ \usepackage[utf8]{inputenc}
+\usepackage{framed}
+\pagestyle{fancy}
+\usepackage{mathtools}
+\setlength{\headheight}{40pt}
+\usepackage{longtable}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{imakeidx}
+\makeindex[columns=3, title=Alphabetical Index, intoc]
+
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newenvironment{solution}
+  {\renewcommand\qedsymbol{$\blacksquare$}
+  \begin{proof}[Solution]}
+  {\end{proof}}
+\renewcommand\qedsymbol{$\blacksquare$}
+
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}} % add packages, settings, and declarations in settings.tex
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{vgreen}{RGB}{104,180,104}
+\definecolor{vblue}{RGB}{49,49,255}
+\definecolor{vorange}{RGB}{255,143,102}
+
+\lstdefinestyle{verilog-style}
+{
+    language=Verilog,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{vblue},
+    identifierstyle=\color{black},
+    commentstyle=\color{vgreen},
+    breaklines=true, 
+    numbers=left,
+    captionpos=b,  
+    numberstyle=\tiny\color{black},
+    numbersep=10pt,
+    tabsize=8,
+    moredelim=*[s][\colorIndex]{[}{]},
+    literate=*{:}{:}1
+}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{c-style}{
+    language=C,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+
+\makeatletter
+\newcommand*\@lbracket{[}
+\newcommand*\@rbracket{]}
+\newcommand*\@colon{:}
+\newcommand*\colorIndex{%
+    \edef\@temp{\the\lst@token}%
+    \ifx\@temp\@lbracket \color{black}%
+    \else\ifx\@temp\@rbracket \color{black}%
+    \else\ifx\@temp\@colon \color{black}%
+    \else \color{vorange}%
+    \fi\fi\fi
+}
+\makeatother
+
+\usepackage{trace}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE \textbf{Habib University}}\\[1.5cm] % Name of your university/college
+\textsc{\large \textbf{CS 421 (Compiler Design and Construction) – FALL 2022}}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Homework 2}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{center}
+\emph{Submitted by:}\\ 
+Fizza Rubab 	 fr06161	\\
+Iqra Siddiqui			 is06176\\
+\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+%\begin{flushright} \large
+%\emph{Supervisor:} \\
+%Dr. James \textsc{Smith} % Supervisor's Name
+%\end{flushright}
+\end{minipage}\\[2cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[3cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics{HU_logo_new.png}\\[1cm] % Include a department/university logo - this will require the graphicx package
+ 
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+\rhead{Homework 2 Solution} 
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+%\maketitle
+
+\section*{LL(1) GRAMMAR}
+
+Program $\rightarrow$ dt id(ParamList){Stmts}\\
+ParamList $\rightarrow$ dt id Plist\\
+PList $\rightarrow$ ,dt id PList | $\epsilon$\\
+Stmts $\rightarrow$ Stmts'\\
+Stmts' $\rightarrow$ DecStmt Stmts'| AssignStmt Stmts' | ForStmt Stmts' | IfStmt Stmts' | ReturnStmt Stmts'| $\epsilon$\\
+DecStmt $\rightarrow$ dt id OptionalAssign List\\
+List $\rightarrow$ ,dt OptionalAssign List | $\epsilon$\\
+OptionalAssign $\rightarrow$ =Expr;|$\epsilon$\\
+Expr $\rightarrow$ TE'\\
+E' $\rightarrow$ +TE'| $\epsilon$\\
+T $\rightarrow$ FT'\\
+T' $\rightarrow$ *FT' | $\epsilon$\\
+F $\rightarrow$ (Expr) | id\\
+ForStmt $\rightarrow$ for(Type id Expr;Expr relop Expr; id++){Stmts}\\
+Type $\rightarrow$ dt | $\epsilon$\\
+IfStmt $\rightarrow$ if (Expr relop Expr){Stmts} OptionalElse\\
+AssignStmt $\rightarrow$ id = Expr;\\
+OptionalElse $\rightarrow$ else {Stmts}|$\epsilon$\\
+ReturnStmt $\rightarrow$ return Expr;
+\begin{framed}
+As it can be seen there is no need for left recursion elimination or left factoring required in the grammar. Now we need to confirm whether this grammar is LL(1) or not.\\
+
+\textbf{Computing FIRST sets for each non-terminal}\\ \\
+FIRST(\textit{Program})= \{dt\}\\
+FIRST(\textit{ParamList})=\{dt\}\\
+FIRST(\textit{PList})=\{,$\epsilon\}$\\
+FIRST(\textit{Stmts})=FIRST(\textit{Stmts'})=FIRST(\textit{DecStmt Stmts'})$\cup$ FIRST(\textit{AssignStmt Stmts'}) $\cup$ FIRST(\textit{ForStmt Stmts'}) $\cup$ FIRST(\textit{IfStmt Stmts'}) $\cup$ FIRST(\textit{ReturnStmt Stmts'}) $\cup$ $\epsilon$\\
+= \{dt\} $\cup$ \{if\}$\cup$ \{for\} $\cup$ \{id\} $\cup$ \{return\} $\cup$ $\epsilon$ = \{dt,if,for,id,return,$\epsilon$\}\\
+FIRST(\textit{Stmts'})=\{dt,if,for,id,return,$\epsilon$\}\\
+FIRST(\textit{DecStmt})=\{dt\}\\
+FIRST(\textit{List})=FIRST(\textit{,dt OptionalAssign List}) $\cup$ $\epsilon$ = \{,$\epsilon$\}\\
+FIRST(\textit{OptionalAssign})=FIRST(\textit{=Expr;}) $\cup$ $\epsilon$ = \{=,$\epsilon$\}\\
+FIRST(\textit{Expr})=FIRST(\textit{TE'})=FIRST(\textit{FT'})=FIRST(\textit{F})=\{(,id\}\\
+FIRST(\textit{E'})=FIRST(\textit{+TE'}) $\cup$ $\epsilon$ = \{+,$\epsilon$\}\\
+FIRST(\textit{T})=FIRST(\textit{FT'})=FIRST(\textit{F})=\{(,id\}\\
+FIRST(\textit{T'})=FIRST(\textit{*FT'}) $\cup$ $\epsilon$ \{*,$\epsilon$\}\\
+FIRST(\textit{F})=\{(,id\}\\
+FIRST(\textit{ForStmt}) = \{for\}\\
+FIRST(\textit{Type}) = \{dt,$\epsilon$\}\\
+FIRST(\textit{ifStmt}) = \{if\}\\
+FIRST(\textit{AssignStmt}) = \{id\}\\
+FIRST(\textit{OptionalElse}) = \{else,$\epsilon$\}\\
+FIRST(\textit{ReturnStmt}) = \{return\}\\
+
+\textbf{Computing FOLLOW sets for each Production}\\
+FOLLOW(\textit{Program}) = \{\$\}\\
+FOLLOW(\textit{ParamList}) = \{)\}\\
+FOLLOW(\textit{PList}) = FOLLOW(\textit{ParamList}) = \{)\}\\
+FOLLOW(\textit{Stmts}) = \{\textbf{\}}\}\\
+FOLLOW(\textit{Stmts'}) = FOLLOW(\textit{Stmts}) = \{\textbf{\}}\}\\
+FOLLOW(\textit{DecStmts}) = (FIRST(\textit{Stmts'}) - $\epsilon$) $\cup$ FOLLOW(Stmts') $\cup$ FOLLOW(Stmts) = \{dt,if,for,id,\textbf{\}}\}\\
+FOLLOW(\textit{List})=FOLLOW(\textit{DecStmts})= \{dt,if,for,id,\textbf{\}}\}\\
+FOLLOW(\textit{OptionalAssign}) = (FIRST(\textit{List}) - $\epsilon$) $\cup$ FOLLOW(List)  $\cup$ FOLLOW(\textit{DecStmts}) = \{\textbf{,},dt,if,for,id,\textbf{\}}\}\\
+FOLLOW(\textit{Expr}) = \{;,relop,)\}\\
+FOLLOW(\textit{E'}) = FOLLOW(\textit{Expr}) = \{;relop,)\}\\
+FOLLOW(\textit{T}) = FIRST(\textit{E'}) - $\epsilon$ $\cup$ FOLLOW(\textit{Expr}) = \{+,;,relop,)\}\\
+FOLLOW(\textit{T'}) = FOLLOW(\textit{T}) = \{+,;,relop,)\}\\
+FOLLOW(\textit{F}) = FIRST(\textit{T'}) - $\epsilon$ $\cup$ FOLLOW(\textit{T}) $\cup$ FOLLOW(\textit{T'}) = \{*,+,;,relop,)\}\\
+FOLLOW(\textit{ForStmt}) = FIRST(\textit{Stmts'}) - $\epsilon$ $\cup$ FOLLOW(\textit{Stmts'}) = \{dt,if,for,id,return,\textbf{\}}\}\\
+FOLLOW(\textit{Type}) = \{id\}\\
+FOLLOW(\textit{IfStmt}) = FIRST(\textit{Stmts'}) - $\epsilon$ $\cup$ FOLLOW(\textit{Stmts'}) = \{dt,if,for,id,return,\textbf{\}}\}\\
+FOLLOW(\textit{AssignStmt}) = FIRST(\textit{Stmts'}) - $\epsilon$ $\cup$ FOLLOW(\textit{Stmts'}) = \{dt,if,for,id,return,\textbf{\}}\}\\
+FOLLOW(\textit{OptionalElse}) = FOLLOW(\textit{IfStmt}) - $\epsilon$ $\cup$ FOLLOW(\textit{Stmts'}) = \{dt,if,for,id,return,\textbf{\}}\}\\
+FOLLOW(\textit{ReturnStmt}) = FIRST(\textit{Stmts'}) - $\epsilon$ $\cup$ FOLLOW(\textit{Stmts'}) = \{dt,if,for,id,return,\textbf{\}}\}\\
+\end{framed}
+
+\end{document}
